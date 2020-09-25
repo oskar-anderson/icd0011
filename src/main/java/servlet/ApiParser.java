@@ -1,10 +1,10 @@
 package servlet;
 
+import global.Global;
 import util.JsonHandling;
 import util.IntOrString;
 import util.Util;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class ApiParser extends HttpServlet {
       }
       json = JsonHandling.mapToString(map);
 
-      resp.setContentType("application/json");
+      resp.setContentType(Global.APPLICATION_JSON);
       resp.getWriter().println(json);
       //Post post = new ObjectMapper().readValue(json, Post.class);
    }

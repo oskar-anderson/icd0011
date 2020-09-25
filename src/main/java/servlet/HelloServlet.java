@@ -14,8 +14,8 @@ public class HelloServlet extends HttpServlet {
                      HttpServletResponse response)
            throws IOException {
 
-      response.setContentType("application/json");
+      // response.setContentType(Global.applicationJson);
 
-      response.getWriter().print("{}");
+      response.getWriter().print("Hello");
    }
 }
