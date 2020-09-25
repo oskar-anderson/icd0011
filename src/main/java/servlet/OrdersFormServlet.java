@@ -48,7 +48,8 @@ public class OrdersFormServlet extends HttpServlet{
         s = s.trim().replaceAll("orderNumber=", "");
 
         UUID uuid = UUID.randomUUID();
-        Order order = new Order(uuid.toString(), s);
+        // char '-' cannot be used, will be parsed to -1 on long cast;
+        Order order = new Order(String.valueOf(uuid.getMostSignificantBits()), s);
 
         new ContextAttribute().storeOrder(order, getServletContext());
         Global.printLine("added order with id " + order.getId());
