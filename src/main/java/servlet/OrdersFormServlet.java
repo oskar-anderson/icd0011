@@ -21,7 +21,7 @@ public class OrdersFormServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
-        List<Order> orders = new ContextAttribute().getOrders(getServletContext());
+        List<Order> orders = ContextAttribute.getOrders(getServletContext());
         Global.printLine(id);
 
         resp.setContentType(Global.TEXT_PLAIN);
@@ -51,7 +51,7 @@ public class OrdersFormServlet extends HttpServlet{
         // char '-' cannot be used, will be parsed to -1 on long cast;
         Order order = new Order(String.valueOf(uuid.getMostSignificantBits()), s);
 
-        new ContextAttribute().storeOrder(order, getServletContext());
+        ContextAttribute.storeOrder(order, getServletContext());
         Global.printLine("added order with id " + order.getId());
 
         resp.setContentType(Global.TEXT_PLAIN);
