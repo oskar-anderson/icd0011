@@ -16,13 +16,9 @@ public class Main {
 
    public static void main(String[] args) throws Exception {
       createSchema();
-      DataSource pool = new ConnectionPoolFactory().createConnectionPool();
-      OrderDao orderDao = new OrderDao(pool);
-
-
-      Order order1 = orderDao.insertOrder(new Order(null, "h57h-7pqg"));
-
-      System.out.println(order1);
+      // DataSource pool = new ConnectionPoolFactory().createConnectionPool();
+      // OrderDao orderDao = new OrderDao(pool);
+      // Order order1 = orderDao.insertOrder(new Order(null, "h57h-7pqg"));
    }
 
    public static void createSchema() throws SQLException {
