@@ -23,32 +23,30 @@ public class OrdersServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
-        Global.printLine(id);
+        Global.printLine("Get with id: " + id);
 
-        DataSource pool2 = (DataSource) getServletContext().getAttribute(Global.POOL);
-        OrderDao orderDao2 = new OrderDao(pool2);
-        List<Order> orders = orderDao2.findOrders();
+        DataSource pool = (DataSource) getServletContext().getAttribute(Global.POOL);
+        OrderDao orderDao = new OrderDao(pool);
 
 
         resp.setContentType(Global.APPLICATION_JSON);
         if (id == null) {
+            List<Order> orders = orderDao.findOrders();
             List<String> response = new ArrayList<>();
             for (Order order : orders) {
                 response.add(new ObjectMapper().writeValueAsString(order));
             }
             resp.getWriter().println(response);
         } else {
-            Order correctOrder = orders.stream()
-                    .filter(order -> order.getId().equals(id))
-                    .findFirst()
-                    .orElse(null);
-            if (correctOrder != null) {
-                String response = new ObjectMapper().writeValueAsString(correctOrder);
+            if (id.matches("-?\\d+")) {
+                long idLong = Long.parseLong(id);
+                Order order = orderDao.findOrderById(idLong);
+                String response = new ObjectMapper().writeValueAsString(order);
                 resp.getWriter().println(response);
+                return;
             }
+            resp.setStatus(404);
         }
-
-
     }
 
     @Override
@@ -61,10 +59,35 @@ public class OrdersServlet extends HttpServlet{
         OrderDao orderDao = new OrderDao(pool);
         order = orderDao.insertOrder(order);
 
-        Global.printLine("added order with id " + order.getId());
+        Global.printLine("Post successful. Added order with id: " + order.getId());
         resp.setContentType(Global.APPLICATION_JSON);
         String response = new ObjectMapper().writeValueAsString(order);
         resp.getWriter().println(response);
 
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req,
+                          HttpServletResponse resp) {
+        String idString = req.getParameter("id");
+
+        if (idString != null) {
+            if (idString.matches("-?\\d+")){
+                long idLong = Long.parseLong(idString);
+                DataSource pool = (DataSource) getServletContext().getAttribute(Global.POOL);
+                OrderDao orderDao = new OrderDao(pool);
+                boolean succ = orderDao.deleteOrder(idLong);
+                if (succ) {
+                    resp.setStatus(200);
+                    Global.printLine("Deleted order with id: " + idLong);
+                    return;
+                }
+                resp.setStatus(404);
+                Global.printLine("Deletion failed, no such id: " + idLong);
+                return;
+            }
+            Global.printLine("Deletion failed. Integer required. Was: " + idString);
+        }
+        resp.setStatus(400);
     }
 }
