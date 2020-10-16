@@ -1,10 +1,16 @@
 package servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import config.Config;
+import config.PostgresDataSource;
 import global.Global;
 import jdbc.OrderDao;
 import model.Order;
+import model.ValidationError;
+import model.ValidationErrors;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import util.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet("/api/orders")
 public class OrdersServlet extends HttpServlet{
@@ -25,9 +34,10 @@ public class OrdersServlet extends HttpServlet{
         String id = req.getParameter("id");
         Global.printLine("Get with id: " + id);
 
-        DataSource pool = (DataSource) getServletContext().getAttribute(Global.POOL);
-        OrderDao orderDao = new OrderDao(pool);
+        // var ctx = new AnnotationConfigApplicationContext(Config.class, PostgresDataSource.class);
+        ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) getServletContext().getAttribute(Global.CTX);
 
+        OrderDao orderDao = ctx.getBean(OrderDao.class);
 
         resp.setContentType(Global.APPLICATION_JSON);
         if (id == null) {
@@ -47,6 +57,7 @@ public class OrdersServlet extends HttpServlet{
             }
             resp.setStatus(404);
         }
+
     }
 
     @Override
@@ -55,14 +66,35 @@ public class OrdersServlet extends HttpServlet{
         String json = Util.readStream(req.getInputStream());
         Order order = new ObjectMapper().readValue(json, Order.class);
 
-        DataSource pool = (DataSource) getServletContext().getAttribute(Global.POOL);
-        OrderDao orderDao = new OrderDao(pool);
-        order = orderDao.insertOrder(order);
-
-        Global.printLine("Post successful. Added order with id: " + order.getId());
         resp.setContentType(Global.APPLICATION_JSON);
+        var errors = new ValidationErrors();
+        List<ValidationError> errorList = new ArrayList<>();
+
+        if (order.getOrderNumber().length() < 2) {
+            ValidationError error1 = new ValidationError()
+                    .buildArguments(Arrays.asList("too_short_number"))
+                    .buildCode("WAT");
+            errorList.add(error1);
+            errors.setErrors(errorList);
+            resp.setStatus(400);
+            String response = new ObjectMapper().writeValueAsString(errors);
+            resp.getWriter().println(response);
+            return;
+        }
+        ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) getServletContext().getAttribute(Global.CTX);
+        //var ctx = new AnnotationConfigApplicationContext(Config.class, PostgresDataSource.class);
+
+        OrderDao orderDao = ctx.getBean(OrderDao.class);
+        long startTime = System.nanoTime();
+        order = orderDao.insertOrder(order);
+        long elapsedTime = System.nanoTime() - startTime;
+        long duration = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+
+        Global.printLine("insertion time (MILLISECONDS):" + duration);
+        Global.printLine("Post successful. Added order with id: " + order.getId());
         String response = new ObjectMapper().writeValueAsString(order);
         resp.getWriter().println(response);
+
 
     }
 
@@ -74,8 +106,10 @@ public class OrdersServlet extends HttpServlet{
         if (idString != null) {
             if (idString.matches("-?\\d+")){
                 long idLong = Long.parseLong(idString);
-                DataSource pool = (DataSource) getServletContext().getAttribute(Global.POOL);
-                OrderDao orderDao = new OrderDao(pool);
+                ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) getServletContext().getAttribute(Global.CTX);
+                //var ctx = new AnnotationConfigApplicationContext(Config.class, PostgresDataSource.class);
+
+                OrderDao orderDao = ctx.getBean(OrderDao.class);
                 boolean succ = orderDao.deleteOrder(idLong);
                 if (succ) {
                     resp.setStatus(200);
@@ -85,6 +119,7 @@ public class OrdersServlet extends HttpServlet{
                 resp.setStatus(404);
                 Global.printLine("Deletion failed, no such id: " + idLong);
                 return;
+
             }
             Global.printLine("Deletion failed. Integer required. Was: " + idString);
         }
