@@ -34,10 +34,10 @@ public class Main {
       try (ctx) {
          OrderDao orderDao = ctx.getBean(OrderDao.class);
          order = orderDao.insertOrder(order);
-         System.out.println(order.toString());
+         //System.out.println(order.toString());
       }
       catch (Exception e) { throw new RuntimeException(e); }
-      System.out.println("finished");
+      //System.out.println("finished");
 
    }
 
