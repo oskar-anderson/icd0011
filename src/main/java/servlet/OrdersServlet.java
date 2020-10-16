@@ -33,7 +33,7 @@ public class OrdersServlet extends HttpServlet{
                          HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
         Global.printLine("Get with id: " + id);
-        // 2
+        // 3
         // var ctx = new AnnotationConfigApplicationContext(Config.class, PostgresDataSource.class);
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) getServletContext().getAttribute(Global.CTX);
 
