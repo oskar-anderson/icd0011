@@ -27,7 +27,6 @@ public class MyListener implements ServletContextListener {
       ServletContext context = servletContextEvent.getServletContext();
       ConfigurableApplicationContext ctx = new AnnotationConfigApplicationContext(
               Config.class,
-              PostgresDataSource.class,
               HsqlDataSource.class);
       context.setAttribute(Global.CTX, ctx);
       Global.printLine("ConfigurableApplicationContext created");
