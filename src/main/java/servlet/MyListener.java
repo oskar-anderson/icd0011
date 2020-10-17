@@ -24,22 +24,11 @@ public class MyListener implements ServletContextListener {
    public void contextInitialized(ServletContextEvent servletContextEvent) {
       Global.printLine("MyListener started...");
 
-      BasicDataSource pool = (BasicDataSource) new ConnectionPoolFactory().createConnectionPool();
-      Global.printLine("Pool created");
-      Main.getTemplate(pool);
-      try {
-         pool.close();
-      } catch (SQLException e) {
-         throw new RuntimeException("Pool was not closed", e);
-      }
-      Global.printLine("DB Table created");
-
       ServletContext context = servletContextEvent.getServletContext();
       ConfigurableApplicationContext ctx = new AnnotationConfigApplicationContext(
               Config.class,
               PostgresDataSource.class,
               HsqlDataSource.class);
-      Global.environment = ctx.getEnvironment();
       context.setAttribute(Global.CTX, ctx);
       Global.printLine("ConfigurableApplicationContext created");
    }

@@ -28,11 +28,6 @@ dependencies {
             name: 'commons-dbcp2',
             version: '2.7.0'
 
-    compile group: 'org.apache.logging.log4j',
-            name: 'log4j-api',
-            version: '2.13.3'
-
-
     implementation group: 'org.springframework',
             name: 'spring-context',
             version: springVersion

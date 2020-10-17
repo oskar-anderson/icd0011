@@ -1,8 +1,6 @@
 package servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import config.Config;
-import config.PostgresDataSource;
 import global.Global;
 import jdbc.OrderDao;
 import model.Order;
@@ -19,10 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @WebServlet("/api/orders")
@@ -33,7 +28,7 @@ public class OrdersServlet extends HttpServlet{
                          HttpServletResponse resp) throws IOException {
         String id = req.getParameter("id");
         Global.printLine("Get with id: " + id);
-        // 3
+        // 4
         // var ctx = new AnnotationConfigApplicationContext(Config.class, PostgresDataSource.class);
         ConfigurableApplicationContext ctx = (ConfigurableApplicationContext) getServletContext().getAttribute(Global.CTX);
 
@@ -72,7 +67,7 @@ public class OrdersServlet extends HttpServlet{
 
         if (order.getOrderNumber().length() < 2) {
             ValidationError error1 = new ValidationError()
-                    .buildArguments(Arrays.asList("too_short_number"))
+                    .buildArguments(Collections.singletonList("too_short_number"))
                     .buildCode("WAT");
             errorList.add(error1);
             errors.setErrors(errorList);

@@ -6,15 +6,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderRow {
-   private String id;
-   private String orderId;
+   private Long id;
+   private Long orderId;
    private String itemName;
    private Integer quantity;
    private Integer price;
 
    public OrderRow() {}
 
-   public OrderRow(String id, String orderId, String itemName, Integer quantity, Integer price) {
+   public OrderRow(Long id, Long orderId, String itemName, Integer quantity, Integer price) {
       this.id = id;
       this.orderId = orderId;
       this.itemName = itemName;
@@ -22,11 +22,11 @@ public class OrderRow {
       this.price = price;
    }
 
-   public String getId() {
+   public Long getId() {
       return id;
    }
 
-   public String getOrderId() {
+   public Long getOrderId() {
       return orderId;
    }
 
@@ -42,11 +42,11 @@ public class OrderRow {
       return price;
    }
 
-   public void setId(String id) {
+   public void setId(Long id) {
       this.id = id;
    }
 
-   public void setOrderId(String id) {
+   public void setOrderId(Long id) {
       this.orderId = id;
    }
 
@@ -85,12 +85,12 @@ public class OrderRow {
    }
 
 
-   public OrderRow buildOrderRowId(String id) {
+   public OrderRow buildOrderRowId(Long id) {
       this.id = id;
       return this;
    }
 
-   public OrderRow buildOrderId(String id) {
+   public OrderRow buildOrderId(Long id) {
       this.orderId = id;
       return this;
    }

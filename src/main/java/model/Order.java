@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
-   private String id;
+   private Long id;
    private String orderNumber;
    private List<OrderRow> orderRows;
 
@@ -15,21 +15,21 @@ public class Order {
       this.orderNumber = orderNumber;
    }
 
-   public Order(String id, String orderNumber) {
+   public Order(Long id, String orderNumber) {
       this.id = id;
       this.orderNumber = orderNumber;
    }
-   public Order(String id, String orderNumber, List<OrderRow> orderRows) {
+   public Order(Long id, String orderNumber, List<OrderRow> orderRows) {
       this.id = id;
       this.orderNumber = orderNumber;
       this.orderRows = orderRows;
    }
 
-   public String getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(String id) {
+   public void setId(Long id) {
       this.id = id;
    }
 

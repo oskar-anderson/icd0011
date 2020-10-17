@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
 
@@ -94,32 +93,28 @@ public class OrderDao {
               .withTableName("order_")
               .usingGeneratedKeyColumns("id")
               .executeAndReturnKey(dataOrder);
-      order.setId(idOrder.toString());
+      order.setId(idOrder.longValue());
 
 
       List<OrderRow> orderRows = order.getOrderRows() == null ? new ArrayList<>() : order.getOrderRows();
       for (OrderRow orderRow : orderRows) {
-         orderRow.setOrderId(idOrder.toString());
-         String idOrderRow = insertOrderRow(orderRow, order.getId());
+         orderRow.setOrderId(idOrder.longValue());
+         Long idOrderRow = insertOrderRow(orderRow);
          orderRow.setId(idOrderRow);
       }
       return order;
 
    }
 
-   private String insertOrderRow(OrderRow orderRow, String orderId){
-      var data = Map.of(
-              "orderId", new BigDecimal(orderId),
-              "itemName", orderRow.getItemName(),
-              "quantity", orderRow.getQuantity(),
-              "price", orderRow.getPrice());
+   private Long insertOrderRow(OrderRow orderRow){
+      var data = new BeanPropertySqlParameterSource(orderRow);
 
       // var dataOrderRow = new BeanPropertySqlParameterSource(orderRow);
       Number idOrderRow = new SimpleJdbcInsert(template)
               .withTableName("orderRow")
               .usingGeneratedKeyColumns("id")
               .executeAndReturnKey(data);
-      return idOrderRow.toString();
+      return idOrderRow.longValue();
    }
 
    public boolean deleteOrder(Long id) {
@@ -131,12 +126,12 @@ public class OrderDao {
 
 
    private static class OrderHandler implements RowCallbackHandler {
-      private Map<String, Order> ordersMap = new HashMap<>();
+      private final Map<Long, Order> ordersMap = new HashMap<>();
       private final List<Order> result = new ArrayList<>();
 
       @Override
       public void processRow(ResultSet rs) throws SQLException {
-         String orderId = rs.getString("orderId");
+         Long orderId = Long.parseLong(rs.getString("orderId"));
          if (ordersMap.get(orderId) == null) {
             Order order = new Order(orderId, rs.getString("orderNumber"));
             ordersMap.put(orderId, order);
@@ -146,7 +141,7 @@ public class OrderDao {
          if (orderRowId == null) {
             return;
          }
-         String id = orderRowId;
+         Long id = Long.parseLong(orderRowId);
          String itemName = rs.getString("itemName");
          Integer quantity = rs.getInt("quantity");
          Integer price = rs.getInt("price");
@@ -169,7 +164,7 @@ public class OrderDao {
          if (orderRowId == null) {
             return;
          }
-         String id = rs.getString("orderRowId");
+         Long id = Long.parseLong(rs.getString("orderRowId"));
          String itemName = rs.getString("itemName");
          Integer quantity = rs.getInt("quantity");
          Integer price = rs.getInt("price");
