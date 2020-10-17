@@ -108,8 +108,6 @@ public class OrderDao {
 
    private Long insertOrderRow(OrderRow orderRow){
       var data = new BeanPropertySqlParameterSource(orderRow);
-
-      // var dataOrderRow = new BeanPropertySqlParameterSource(orderRow);
       Number idOrderRow = new SimpleJdbcInsert(template)
               .withTableName("orderRow")
               .usingGeneratedKeyColumns("id")

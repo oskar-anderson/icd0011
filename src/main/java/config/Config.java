@@ -24,30 +24,4 @@ public class Config  {
     public JdbcTemplate getTemplate(DataSource ds) {
         return new JdbcTemplate(ds);
     }
-
-    public OrderDao getOrderDao(DataSource ds)
-    {
-        return new OrderDao(getTemplate(ds));
-    }
-
-    @Bean
-    public DataSource dataSource(Environment env) {
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName("org.postgresql.Driver");
-        // ds.setUrl("jdbc:postgresql://db.mkalmo.xyz:5432/kaande");
-        // ds.setUsername("kaande");
-        // ds.setPassword("fb85");
-        ds.setUsername(env.getProperty("dbUser"));
-        ds.setPassword(env.getProperty("dbPassword"));
-        ds.setUrl(env.getProperty("dbUrl"));
-
-        var populator = new ResourceDatabasePopulator(
-                new ClassPathResource("schema.sql"),
-                new ClassPathResource("data.sql"));
-
-        DatabasePopulatorUtils.execute(populator, ds);
-
-        return ds;
-    }
-
 }
