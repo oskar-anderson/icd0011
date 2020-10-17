@@ -2,7 +2,7 @@ package servlet;
 
 import config.Config;
 import config.HsqlDataSource;
-import config.PostgresDataSource;
+//import config.PostgresDataSource;
 import global.Global;
 import jdbc.Main;
 import org.apache.commons.dbcp2.BasicDataSource;
