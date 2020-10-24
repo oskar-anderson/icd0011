@@ -1,5 +1,6 @@
 package jdbc;
 
+import global.Global;
 import model.Order;
 import model.OrderRow;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,9 +36,7 @@ public class OrderDao {
 
 
       List<Order> queryResult = handler.result;
-      // List<Order> result = queryLinesToOrderWithRows(queryResult);
-      assert true;  // bypasses styleCheck
-      return queryResult;
+      return Global.unnecessaryLocalBeforeReturn(queryResult);
    }
 
 
@@ -56,35 +55,8 @@ public class OrderDao {
               "where order_.id = " + id + ";", handler);
 
       List<Order> queryResult = handler.result;
-      // List<Order> result = queryLinesToOrderWithRows(queryResult);
       return queryResult.get(0);
    }
-/*
-
-   private List<Order> queryLinesToOrderWithRows(List<Order> queryLines) {
-      Map<String, Order> ordersMap = new HashMap<>();
-      List<Order> orders = new ArrayList<>();
-      for (Order orderLine : queryLines) {
-         String orderId = orderLine.getId();
-         if (ordersMap.get(orderId) == null) {
-            Order order = new Order(orderId, orderLine.getOrderNumber());
-            ordersMap.put(orderId, order);
-            orders.add(order);
-         }
-         if (orderLine.getOrderRows() == null) {
-            continue;
-         }
-         if (orderLine.getOrderRows().size() != 1) {
-            throw new RuntimeException("unexpected");
-         }
-         OrderRow orderRow = orderLine.getOrderRows().get(0);
-
-         ordersMap.get(orderRow.getOrderId()).add(orderRow);
-      }
-      return orders;
-   }
-
-*/
 
    public Order insertOrder(Order order) {
       var dataOrder = new BeanPropertySqlParameterSource(order);
@@ -144,31 +116,7 @@ public class OrderDao {
          Integer quantity = rs.getInt("quantity");
          Integer price = rs.getInt("price");
 
-
          ordersMap.get(orderId).add(new OrderRow(id, orderId, itemName, quantity, price));
-
-         //Order order = new Order();
-         // order.setId(rs.getString("orderId"));
-         //order.setOrderNumber(rs.getString("orderNumber"));
-
-         // addOrderRowsToOrder(rs, order);
-
-         // result.add(order);
-
-      }
-
-      private void addOrderRowsToOrder(ResultSet rs, Order order) throws SQLException {
-         String orderRowId = rs.getString("orderRowId");
-         if (orderRowId == null) {
-            return;
-         }
-         Long id = Long.parseLong(rs.getString("orderRowId"));
-         String itemName = rs.getString("itemName");
-         Integer quantity = rs.getInt("quantity");
-         Integer price = rs.getInt("price");
-
-         OrderRow orderRow = new OrderRow(id, order.getId(), itemName, quantity, price);
-         order.add(orderRow);
       }
    }
 }

@@ -10,6 +10,9 @@ sourceCompatibility = 11
 
 def springVersion = '5.2.9.RELEASE'
 def hsqldbVersion = '2.5.1'
+def hibernateValidatorVersion = '6.1.6.Final'
+def log4jVersion = '2.12.1'
+
 
 repositories {
     jcenter()
@@ -27,6 +30,14 @@ dependencies {
     compile group: 'org.apache.commons',
             name: 'commons-dbcp2',
             version: '2.7.0'
+
+    implementation group: 'org.springframework',
+            name: 'spring-webmvc',
+            version: springVersion
+
+    implementation group: 'org.hibernate',
+            name: 'hibernate-validator',
+            version: hibernateValidatorVersion
 
     implementation group: 'org.springframework',
             name: 'spring-context',
@@ -53,6 +64,18 @@ dependencies {
     implementation group: 'org.apache.commons',
             name: 'commons-lang3',
             version: '3.9'
+
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.0-rc1'
+
+
+    implementation group: 'org.apache.logging.log4j',
+            name: 'log4j-api',
+            version: log4jVersion
+
+    implementation group: 'org.apache.logging.log4j',
+            name: 'log4j-core',
+            version: log4jVersion
+
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'

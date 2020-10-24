@@ -1,12 +1,20 @@
 package model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
    private Long id;
+   @Length(min = 2)
    private String orderNumber;
+   @Valid
    private List<OrderRow> orderRows;
 
    public Order() {}

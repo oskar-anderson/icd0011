@@ -3,13 +3,22 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderRow {
    private Long id;
    private Long orderId;
    private String itemName;
+
+   @NotNull
+   @Range(min = 1, max = Integer.MAX_VALUE)
    private Integer quantity;
+
+   @NotNull
+   @Range(min = 1, max = Integer.MAX_VALUE)
    private Integer price;
 
    public OrderRow() {}

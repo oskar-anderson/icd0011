@@ -1,8 +1,19 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ValidationError {
+   @NonNull
    private String code;
    private List<String> arguments;
 
