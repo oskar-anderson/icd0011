@@ -1,7 +1,9 @@
 package app;
 
-import jdbc.OrderDao;
-import model.Order;
+import config.DbConfig;
+import dao.OrderDaoJPA;
+import model.OrderJPA;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,42 +11,36 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.List;
 
-import static global.Global.*;
+import static global.Global.print;
+import static global.Global.unnecessaryLocalBeforeReturn;
 
 @RestController
-public class OrderController {
+public class OrderControllerJPA {
 
-   private final OrderDao dao;
+   private final OrderDaoJPA dao;
 
-   public OrderController(OrderDao dao){
-      this.dao = dao;
+   public OrderControllerJPA(){
+      var ctx = new AnnotationConfigApplicationContext(DbConfig.class);
+      this.dao = ctx.getBean(OrderDaoJPA.class);
    }
 
    @GetMapping("orders/{id}")
-   protected Order doGet(@PathVariable Long id) {
-      Order order = dao.findOrderById(id);
+   protected OrderJPA doGet(@PathVariable Long id) {
+      OrderJPA order = dao.findOrderById(id);
       print("Get order. id= " + id + ": " + order);
       return unnecessaryLocalBeforeReturn(order);
    }
 
    @GetMapping("orders")
-   protected List<Order> doGet() {
-      List<Order> orders = dao.findOrders();
+   protected List<OrderJPA> doGet() {
+      List<OrderJPA> orders = dao.findOrders();
       print("Get all orders:" + orders);
       return unnecessaryLocalBeforeReturn(orders);
    }
 
-   @GetMapping("orders/{id}/installments")
-   protected List<Installment> doGetPaymentLogic(@PathVariable Long id, @RequestParam(name = "start") String startDate, @RequestParam(name = "end") String endDate) {
-      Order order = dao.findOrderById(id);
-      List<Installment> payments = Installment.dividePayment(order, startDate, endDate);
-      print("PaymentSchedule:" + payments);
-      return unnecessaryLocalBeforeReturn(payments);
-   }
-
    @PostMapping("orders")
    // @ResponseStatus(HttpStatus.CREATED)  // only 200 is good for us;
-   protected Order doPost(@RequestBody @Valid Order order) {
+   protected OrderJPA doPost(@RequestBody @Valid OrderJPA order) {
       order = dao.insertOrder(order);
       print("Post order. Added order " + order);
       return unnecessaryLocalBeforeReturn(order);

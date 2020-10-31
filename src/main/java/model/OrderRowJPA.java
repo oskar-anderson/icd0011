@@ -1,42 +1,38 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderRow {
-   private Long id;
-   private Long orderId;
+@Embeddable
+@Table(name = "order_rows")
+public class OrderRowJPA {
+
+   @Column(name = "item_name")
    private String itemName;
 
    @NotNull
+   @Column(name = "quantity")
    @Range(min = 1, max = Integer.MAX_VALUE)
    private Integer quantity;
 
    @NotNull
+   @Column(name = "price")
    @Range(min = 1, max = Integer.MAX_VALUE)
    private Integer price;
 
-   public OrderRow() {}
+   public OrderRowJPA() {}
 
-   public OrderRow(Long id, Long orderId, String itemName, Integer quantity, Integer price) {
-      this.id = id;
-      this.orderId = orderId;
+   public OrderRowJPA(String itemName, Integer quantity, Integer price) {
       this.itemName = itemName;
       this.quantity = quantity;
       this.price = price;
-   }
-
-   public Long getId() {
-      return id;
-   }
-
-   public Long getOrderId() {
-      return orderId;
    }
 
    public String getItemName() {
@@ -49,14 +45,6 @@ public class OrderRow {
 
    public Integer getPrice() {
       return price;
-   }
-
-   public void setId(Long id) {
-      this.id = id;
-   }
-
-   public void setOrderId(Long id) {
-      this.orderId = id;
    }
 
    public void setItemName(String itemName) {
@@ -75,8 +63,6 @@ public class OrderRow {
    @Override
    public String toString() {
       return "OrderRow{" +
-              "id='" + id + "'" +
-              "orderId='" + orderId + "'" +
               "itemName='" + itemName + '\'' +
               ", quantity=" + quantity +
               ", price=" + price +
@@ -94,27 +80,17 @@ public class OrderRow {
    }
 
 
-   public OrderRow buildOrderRowId(Long id) {
-      this.id = id;
-      return this;
-   }
-
-   public OrderRow buildOrderId(Long id) {
-      this.orderId = id;
-      return this;
-   }
-
-   public OrderRow buildItemName(String itemName) {
+   public OrderRowJPA buildItemName(String itemName) {
       this.itemName = itemName;
       return this;
    }
 
-   public OrderRow buildQuantity(Integer quantity) {
+   public OrderRowJPA buildQuantity(Integer quantity) {
       this.quantity = quantity;
       return this;
    }
 
-   public OrderRow buildPrice(Integer price) {
+   public OrderRowJPA buildPrice(Integer price) {
       this.price = price;
       return this;
    }

@@ -2,32 +2,47 @@ package model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 
+//import org.hibernate.annotations.Entity; //this is wrong
+import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+@Entity
+@Table(name = "orders")
+public class OrderJPA {
+   @Id
+   @SequenceGenerator(name = "my_seq", sequenceName = "seq3", allocationSize = 1)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_seq")
    private Long id;
+
    @Length(min = 2)
+   @Column(name = "order_number")
    private String orderNumber;
+
+   @ElementCollection(fetch = FetchType.EAGER)
    @Valid
-   private List<OrderRow> orderRows;
+   @CollectionTable(
+           name = "order_rows",
+           joinColumns = @JoinColumn(
+                   name = "orders_id",
+                   referencedColumnName = "id"
+           )
+   )
+   private List<OrderRowJPA> orderRows = new ArrayList<>();
 
-   public Order() {}
+   public OrderJPA() {}
 
-   public Order(String orderNumber) {
+   public OrderJPA(String orderNumber) {
       this.orderNumber = orderNumber;
    }
 
-   public Order(Long id, String orderNumber) {
+   public OrderJPA(Long id, String orderNumber) {
       this.id = id;
       this.orderNumber = orderNumber;
    }
-   public Order(Long id, String orderNumber, List<OrderRow> orderRows) {
+   public OrderJPA(Long id, String orderNumber, List<OrderRowJPA> orderRows) {
       this.id = id;
       this.orderNumber = orderNumber;
       this.orderRows = orderRows;
@@ -49,11 +64,11 @@ public class Order {
       this.orderNumber = orderNumber;
    }
 
-   public List<OrderRow> getOrderRows() {
+   public List<OrderRowJPA> getOrderRows() {
       return orderRows;
    }
 
-   public void add(OrderRow orderRow) {
+   public void add(OrderRowJPA orderRow) {
       if (orderRows == null) {
          orderRows = new ArrayList<>();
       }

@@ -10,7 +10,7 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
 
    @Override
    protected Class<?>[] getServletConfigClasses() {
-      return new Class[] { MvcConfig.class };
+      return new Class[] { MvcConfig.class, DbConfig.class };
    }
 
    @Override

@@ -1,3 +1,8 @@
+/*
+JDBC version - just in case
+*/
+
+/*
 
 DROP TABLE IF EXISTS order_ CASCADE;
 DROP SEQUENCE IF EXISTS seq1 CASCADE;
@@ -20,4 +25,31 @@ CREATE TABLE orderRow (
     quantity INTEGER NOT NULL,
     price INTEGER NOT NULL
 
+);
+
+*/
+
+
+/*
+JPA version
+*/
+
+DROP TABLE IF EXISTS order_rows;
+DROP TABLE IF EXISTS orders;
+DROP SEQUENCE IF EXISTS seq3;
+
+CREATE SEQUENCE seq3 AS INTEGER START WITH 1;
+
+CREATE TABLE orders (
+    id BIGINT NOT NULL PRIMARY KEY DEFAULT nextval('seq3'),
+    order_number VARCHAR(255)
+);
+
+CREATE TABLE order_rows (
+    orders_id BIGINT,
+    item_name VARCHAR(255),
+    quantity INT,
+    price INT,
+    FOREIGN KEY (orders_id)
+        REFERENCES orders ON DELETE CASCADE
 );

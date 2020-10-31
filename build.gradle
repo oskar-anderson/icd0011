@@ -12,6 +12,7 @@ def springVersion = '5.2.9.RELEASE'
 def hsqldbVersion = '2.5.1'
 def hibernateValidatorVersion = '6.1.6.Final'
 def log4jVersion = '2.12.1'
+def hibernateVersion = '5.4.22.Final'
 
 
 repositories {
@@ -38,6 +39,14 @@ dependencies {
     implementation group: 'org.hibernate',
             name: 'hibernate-validator',
             version: hibernateValidatorVersion
+
+    implementation group: 'org.hibernate',
+            name: 'hibernate-core',
+            version: hibernateVersion
+
+    implementation group: 'org.springframework',
+            name: 'spring-orm',
+            version: springVersion
 
     implementation group: 'org.springframework',
             name: 'spring-context',
