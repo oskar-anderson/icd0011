@@ -1,6 +1,6 @@
 package main;
 
-import config.DbConfig;
+import conf.DbConfig;
 import dao.OrderDaoJPA;
 import model.OrderJPA;
 import org.springframework.context.ConfigurableApplicationContext;

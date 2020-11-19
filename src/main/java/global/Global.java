@@ -2,7 +2,6 @@ package global;
 
 import util.PropertyLoader;
 
-import java.io.PrintStream;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ public class Global {
       return item;
    }
 
-   public static void print(String msg) {
+   public static <T> void print(T msg) {
       // METHOD 1
       // System.out.println(msg);  // NOPMD
 

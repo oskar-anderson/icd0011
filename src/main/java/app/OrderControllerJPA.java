@@ -1,6 +1,6 @@
 package app;
 
-import config.DbConfig;
+import conf.DbConfig;
 import dao.OrderDaoJPA;
 import model.OrderJPA;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -24,21 +24,21 @@ public class OrderControllerJPA {
       this.dao = ctx.getBean(OrderDaoJPA.class);
    }
 
-   @GetMapping("orders/{id}")
+   @GetMapping("api/orders/{id}")
    protected OrderJPA doGet(@PathVariable Long id) {
       OrderJPA order = dao.findOrderById(id);
       print("Get order. id= " + id + ": " + order);
       return unnecessaryLocalBeforeReturn(order);
    }
 
-   @GetMapping("orders")
+   @GetMapping("api/orders")
    protected List<OrderJPA> doGet() {
       List<OrderJPA> orders = dao.findOrders();
       print("Get all orders:" + orders);
       return unnecessaryLocalBeforeReturn(orders);
    }
 
-   @PostMapping("orders")
+   @PostMapping("api/orders")
    // @ResponseStatus(HttpStatus.CREATED)  // only 200 is good for us;
    protected OrderJPA doPost(@RequestBody @Valid OrderJPA order) {
       order = dao.insertOrder(order);
@@ -46,7 +46,7 @@ public class OrderControllerJPA {
       return unnecessaryLocalBeforeReturn(order);
    }
 
-   @DeleteMapping("orders/{id}")
+   @DeleteMapping("api/orders/{id}")
    protected void doDelete(@PathVariable Long id) {
       boolean succ = dao.deleteOrder(id);
       if (! succ) {

@@ -1,48 +1,98 @@
 plugins {
-    id 'java'
+    id 'war'
     id 'org.gretty' version '3.0.3'
 }
-
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 11
-
-def springVersion = '5.2.9.RELEASE'
-def hsqldbVersion = '2.5.1'
-def hibernateValidatorVersion = '6.1.6.Final'
-def log4jVersion = '2.12.1'
-def hibernateVersion = '5.4.22.Final'
-
 
 repositories {
     jcenter()
 }
 
+sourceCompatibility = 11
+
+def springVersion = '5.3.0'
+def springSecurityVersion = '5.4.1'
+def jacksonVersion = '2.11.3'
+def log4jVersion = '2.12.1'
+def lombokVersion = '1.18.12'
+def jsonWebTokenVersion = '0.11.2'
+def junitVersion = '4.12'
+def hibernateVersion = '5.4.22.Final'
+def hibernateValidatorVersion = '6.1.6.Final'
+def hsqldbVersion = '2.5.1'
+
+
 dependencies {
-    compile group: 'org.postgresql',
-            name: 'postgresql',
-            version: '42.2.16'
-
-    compile group: 'org.hsqldb',
-            name: 'hsqldb',
-            version: '2.5.1'
-
-    compile group: 'org.apache.commons',
-            name: 'commons-dbcp2',
-            version: '2.7.0'
 
     implementation group: 'org.springframework',
             name: 'spring-webmvc',
             version: springVersion
 
-    implementation group: 'org.hibernate',
-            name: 'hibernate-validator',
-            version: hibernateValidatorVersion
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-web',
+            version: springSecurityVersion
 
-    implementation group: 'org.hibernate',
-            name: 'hibernate-core',
-            version: hibernateVersion
+    implementation group: 'org.springframework.security',
+            name: 'spring-security-config',
+            version: springSecurityVersion
+
+    implementation group: 'com.fasterxml.jackson.core',
+            name: 'jackson-databind',
+            version: jacksonVersion
+
+    implementation group: 'org.apache.logging.log4j',
+            name: 'log4j-api',
+            version: log4jVersion
+
+    implementation group: 'org.apache.logging.log4j',
+            name: 'log4j-core',
+            version: log4jVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-api',
+            version: jsonWebTokenVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-impl',
+            version: jsonWebTokenVersion
+
+    implementation group: 'io.jsonwebtoken',
+            name: 'jjwt-jackson',
+            version: jsonWebTokenVersion
+
+    implementation group: 'org.thymeleaf',
+            name: 'thymeleaf',
+            version: '3.0.11.RELEASE'
+
+    implementation group: 'org.thymeleaf',
+            name: 'thymeleaf-spring5',
+            version: '3.0.11.RELEASE'
+
+    compileOnly group: 'org.projectlombok',
+            name: 'lombok',
+            version: lombokVersion
+
+    annotationProcessor group: 'org.projectlombok',
+            name: 'lombok',
+            version: lombokVersion
+
+    testImplementation group: 'org.springframework',
+            name: 'spring-test',
+            version: springVersion
+
+    testImplementation group: 'org.springframework.security',
+            name: 'spring-security-test',
+            version: springSecurityVersion
+
+    testImplementation group: 'junit',
+            name: 'junit',
+            version: junitVersion
+
+
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.0-rc1'
 
     implementation group: 'org.springframework',
             name: 'spring-orm',
@@ -66,29 +116,39 @@ dependencies {
             name: 'hsqldb',
             version: hsqldbVersion
 
+/*
+    Source of Evil - servlet.PageNotFound No mapping
     implementation group: 'javax.servlet',
             name: 'javax.servlet-api',
             version: '4.0.1'
+*/
+
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation group: 'org.apache.commons',
             name: 'commons-lang3',
             version: '3.9'
 
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.0-rc1'
+    implementation group: 'org.hibernate',
+            name: 'hibernate-validator',
+            version: hibernateValidatorVersion
+
+    implementation group: 'org.hibernate',
+            name: 'hibernate-core',
+            version: hibernateVersion
 
 
-    implementation group: 'org.apache.logging.log4j',
-            name: 'log4j-api',
-            version: log4jVersion
+    compile group: 'org.postgresql',
+            name: 'postgresql',
+            version: '42.2.16'
 
-    implementation group: 'org.apache.logging.log4j',
-            name: 'log4j-core',
-            version: log4jVersion
+    compile group: 'org.hsqldb',
+            name: 'hsqldb',
+            version: '2.5.1'
 
+    compile group: 'org.apache.commons',
+            name: 'commons-dbcp2',
+            version: '2.7.0'
 
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 gretty {

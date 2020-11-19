@@ -1,4 +1,5 @@
-package config;
+
+package conf;
 
 import global.Global;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -55,7 +56,8 @@ public class DbConfig {
            @Qualifier("dialect") String dialect) {
 
       var populator = new ResourceDatabasePopulator(
-              new ClassPathResource("schema.sql"));
+              new ClassPathResource("schema.sql"),
+              new ClassPathResource("data.sql"));
       DatabasePopulatorUtils.execute(populator, dataSource);
 
 
@@ -89,3 +91,4 @@ public class DbConfig {
    }
 
 }
+
