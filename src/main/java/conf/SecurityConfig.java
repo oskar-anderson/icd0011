@@ -9,6 +9,7 @@ import dao.UserDaoJPA;
 import model.UserJPA;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 import java.util.List;
@@ -68,10 +70,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
+        // source:
+        // https://www.youtube.com/watch?v=LKvrFltAgCQ&ab_channel=JavaBrains&fbclid=IwAR2-DeMmlC24z1l8eSDLt86p3t6AMX-_iIINEwoxNtNbgBUuiynTZpfSiMg
+        // https://grobmeier.solutions/spring-security-5-using-jdbc.html
+        builder
+                .jdbcAuthentication()
+                .dataSource(DbConfig.getDataSource())
+                .passwordEncoder(getPasswordEncoder())
+                .usersByUsernameQuery("select username,password,enabled "
+                        + "from users "
+                        + "where username = ?")
+                .authoritiesByUsernameQuery("select username, authority "
+                        + "from authorities "
+                        + "where username = ?");
+
+        /*
+        // this is stupid, but it works
         var ctx = new AnnotationConfigApplicationContext(DbConfig.class);
         var dao = ctx.getBean(UserDaoJPA.class);
         List<UserJPA> users = dao.findUsers();
-        // this is stupid, but it works. New users cannot login until server restart.
         UserDetailsManagerConfigurer
                 <
                 AuthenticationManagerBuilder,
@@ -105,7 +122,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
 
         }
-        /*
         builder
                 .jdbcAuthentication()
                 .dataSource(restDataSource)
@@ -124,6 +140,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         */
     }
 
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 
 

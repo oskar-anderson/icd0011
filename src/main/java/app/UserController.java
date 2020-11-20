@@ -68,7 +68,7 @@ public class UserController {
 
     @GetMapping("/api/users")
     public String getUserByName(Authentication auth) {
-        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
             // return "Admin privileges granted" // is the same result as
             // throw new ResponseStatusException(HttpStatus.OK, "Admin privileges granted");
             throw new ResponseStatusException(HttpStatus.OK, "Admin privileges granted");
@@ -85,13 +85,13 @@ public class UserController {
         } catch (javax.persistence.NoResultException ignored){
 
         }
-        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
+        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
             if (dbUser == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "NOT_FOUND");
             }
             return dbUser;
         }
-        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+        if (auth.getAuthorities().contains(new SimpleGrantedAuthority("USER"))) {
             if (!auth.getPrincipal().equals(userName)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED");
             }
